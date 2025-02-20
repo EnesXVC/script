@@ -1,0 +1,165 @@
+local OrionLib = loadstring(game:HttpGet(('https://pastebin.com/raw/Ne470NUV')))()
+
+local Window = OrionLib:MakeWindow({Name = "Deobfuscator", HidePremium = false, SaveConfig = false})
+
+-- ASCII Deobfuscator Tab
+local ASCIIDeobfuscateTab = Window:MakeTab({
+    Name = "Deobfuscate",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local Section = ASCIIDeobfuscateTab:AddSection({
+    Name = "ASCII Script Deobfuscator"
+})
+
+local ScriptBox = ASCIIDeobfuscateTab:AddTextbox({
+    Name = "Paste Obfuscated ASCII Script",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(Value)
+        scriptInput = Value
+    end
+})
+
+ASCIIDeobfuscateTab:AddButton({
+    Name = "ASCII Deobfuscate and Copy",
+    Callback = function()
+        local function deobfuscate(script)
+            script = script:gsub("\\(%d+)", function(c)
+                return string.char(tonumber(c))
+            end)
+            return script
+        end
+
+        if scriptInput and scriptInput ~= "" then
+            local deobfuscatedScript = deobfuscate(scriptInput)
+            setclipboard(deobfuscatedScript)
+            OrionLib:MakeNotification({
+                Name = "Success!",
+                Content = "Script deobfuscated and copied to clipboard!",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "Error!",
+                Content = "No script provided!",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        end
+    end
+})
+
+-- Binary Deobfuscator Tab
+local BinaryTab = Window:MakeTab({
+    Name = "Binary Deobfuscate",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local BinarySection = BinaryTab:AddSection({
+    Name = "Binary Script Deobfuscator"
+})
+
+local BinaryScriptBox = BinaryTab:AddTextbox({
+    Name = "Paste Obfuscated Binary Script",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(Value)
+        binaryInput = Value
+    end
+})
+
+BinaryTab:AddButton({
+    Name = "Deobfuscate Binary and Copy",
+    Callback = function()
+        local function binaryDeobfuscate(binary)
+            return string.char(tonumber(binary, 2))  -- Binary'den karaktere çevir
+        end
+
+        if binaryInput and binaryInput ~= "" then
+            local binaryScripts = {}
+            for binary in binaryInput:gmatch("[01]+") do
+                table.insert(binaryScripts, binaryDeobfuscate(binary))
+            end
+            local deobfuscatedBinary = table.concat(binaryScripts)
+            setclipboard(deobfuscatedBinary)
+            OrionLib:MakeNotification({
+                Name = "Success!",
+                Content = "Binary script deobfuscated and copied to clipboard!",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "Error!",
+                Content = "No binary script provided!",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        end
+    end
+})
+
+-- Hex Deobfuscator Tab
+local HexTab = Window:MakeTab({
+    Name = "Hex Deobfuscate",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local HexSection = HexTab:AddSection({
+    Name = "Hex Script Deobfuscator"
+})
+
+local HexScriptBox = HexTab:AddTextbox({
+    Name = "Paste Obfuscated Hex Script",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(Value)
+        hexInput = Value
+    end
+})
+
+HexTab:AddButton({
+    Name = "Deobfuscate Hex and Copy",
+    Callback = function()
+        local function hexDeobfuscate(hex)
+            local output = ""
+            for i = 1, #hex, 2 do
+                local byte = hex:sub(i, i + 1)
+                output = output .. string.char(tonumber(byte, 16))
+            end
+            return output
+        end
+
+        if hexInput and hexInput ~= "" then
+            local deobfuscatedHex = hexDeobfuscate(hexInput)
+            setclipboard(deobfuscatedHex)
+            OrionLib:MakeNotification({
+                Name = "Success!",
+                Content = "Hex script deobfuscated and copied to clipboard!",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "Error!",
+                Content = "No hex script provided!",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        end
+    end
+})
+
+-- Decode Function
+local function Decode(input, mode)
+    if mode == "Hex" then
+        return hexDeobfuscate(input:gsub(" ", ""))
+    end
+end
+
+OrionLib:Init()
